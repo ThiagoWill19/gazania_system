@@ -1,0 +1,48 @@
+
+
+  @import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@1,300&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:ital@1&display=swap');
+
+.title{
+	font-family: 'Barlow', sans-serif;
+}
+
+p, a {
+	font-family: 'Prompt', sans-serif;
+}
+
+.navbar-brand{
+	font-family: 'Barlow', sans-serif;
+}
+
+.subGroup{
+    margin-left: 15px;
+}
+
+label {
+    color: rgb(72, 72, 230);
+    font-weight: bold;
+    font-family: 'Prompt', sans-serif;
+}
+
+.subTitle{
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0;
+}
+
+.textStatus{
+	font-weight: bold;
+    font-size: 15px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.margL{
+	margin-left: 15px;
+}
+
+.bt{
+	margin-right: 12px;
+	width: 40px;
+}

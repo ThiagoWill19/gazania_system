@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🌼 Gazânia System </title>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-dark bg-dark justify-content-start">
+		<a class="navbar-brand">Gazânia system - DRE</a>
+	</nav>	
+
+	<div class="container">	
+
+		<nav class="mt-3" aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item" aria-current="page"><a href="/home">Home</a></li>
+			    <li class="breadcrumb-item active" aria-current="page">DRE</li>
+			</ol>
+		  </nav>
+		  
+
+		 <h1 class="text-center"><p>DRE</p></h1>
+	
+		<div class="container">
+		
+			<div class="d-flex justify-content-between">
+			
+				<form class="w-25" th:method="post" th:action="@{/dre}">
+					<div class="d-flex justify-content-start">
+						<input class="form-control" onkeypress="$(this).mask('0000-00')" type="text" th:name="periodo" placeholder="0000-00" required>
+						<button class="btn btn-light btn-sm border margL" type="submit">Buscar</button>
+					</div>
+				</form>
+				
+				<div>
+					<div th:if="${message}" class="alert alert-success" role="alert">
+ 					<span th:text="${message}"></span>
+					</div>
+	
+					<form method="post" th:action="@{/dre/salvartxt}">
+						<input class="form-control" type="text" th:name="periodo" th:value="${demonstrativo.periodo}" hidden>
+						<button class="btn btn-primary" type="submit">Gerar arquivo PDF do demonstrativo deste período</button>
+					</form>
+				
+				</div>
+
+			</div>
+		
+			
+			<div class="card mt-3 mb-5 bg-light">
+				<div class="card-body">
+					
+					<div class="row justify-content-between">
+					
+						<div class="d-flex justify-content-between">
+							<p class="subTitle p-0">Período: <span class="text-success" th:text="${demonstrativo.periodo}"></span></p>
+							<p class="margL text-danger p-0 " th:if="${demonstrativo.statusDosServicos}">Ainda existem serviços em aberto (serviços em aberto não são contabilizados aqui!)</p>
+							<p class="margL text-success p-0" style="font-weight: bold;" th:unless="${demonstrativo.statusDosServicos}">Não há serviços em aberto para este período</p>
+						</div>
+					
+						<div class="col-lg-6">
+						
+							<p class="subTitle mt-3 mb-3">Gastos</p>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Pro-labore: <span class="text-success margL" th:text="${demonstrativo.prolabore}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">RGPS: <span class="text-success margL" th:text="${demonstrativo.rgps}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Pagamento prestador: <span class="text-success margL" th:text="${demonstrativo.pagamentoPrestadorServico}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Abastecimento automóvel: <span class="text-success margL" th:text="${demonstrativo.abastecimentoCarro}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Abastecimento Maquinário: <span class="text-success margL" th:text="${demonstrativo.abastecimentoEquipamento}"></span></p>
+							</div><div class="d-flex justify-content-start">
+								<p class="m-0">Compra de produtos: <span class="text-success margL" th:text="${demonstrativo.compraProduto}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Compra de equipamentos: <span class="text-success margL" th:text="${demonstrativo.compraEquipamento}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Compra de automóvel: <span class="text-success margL" th:text="${demonstrativo.compraAutomovel}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Manutenção automóvel: <span class="text-success margL" th:text="${demonstrativo.manutencaCarro}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Manutenção equipamento: <span class="text-success margL" th:text="${demonstrativo.manutencaoEquipameto}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Retirada: <span class="text-success margL" th:text="${demonstrativo.retirada}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start mt-2">
+								<p class="m-0 subTitle">Total Gastos: <span class="text-muted margL" th:text="${demonstrativo.getGastoToString}"></span></p>
+							</div>
+						
+						
+						</div>
+						<div class="col-lg-6">
+						
+							<p class="subTitle mt-3 mb-3">Receitas</p>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Total em serviços contratado: <span class="text-success margL" th:text="${demonstrativo.servicosContrarado}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Total em serviços Adicionais: <span class="text-success margL" th:text="${demonstrativo.servicosAdicionais}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="m-0">Total em vendas: <span class="text-success margL" th:text="${demonstrativo.vendas}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start mt-2">
+								<p class="m-0 subTitle">Total Receita: <span class="text-muted margL" th:text="${demonstrativo.getReceitaToString}"></span></p>
+							</div>
+							
+							<div class="d-flex justify-content-start mt-5">
+								<p class="m-0 subTitle">Lucro: <span class="text-muted margL" th:text="${demonstrativo.getLucroToString}"></span></p>
+							</div>
+							
+						</div>
+					</div>
+									
+				</div>
+			</div>
+		</div>
+		 
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

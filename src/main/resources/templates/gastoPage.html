@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🌼 Gazânia System </title>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-dark bg-dark">
+		<a class="navbar-brand" href="/home">Gazânia system - Gastos</a>
+		
+	</nav>	
+
+	<div class="container">	
+
+		<nav class="mt-3" aria-label="breadcrumb">
+			<ol class="breadcrumb">
+			  <li class="breadcrumb-item" aria-current="page"><a href="/home">Home</a></li>
+			  <li class="breadcrumb-item active" aria-current="page">Gastos</li>
+			</ol>
+		  </nav>
+		  
+
+		 <h1 class="text-center mt-3"><p>Gastos</p></h1>
+
+		 <div class="d-flex justify-content-between">
+			
+			<div class="d-flex flex-column">
+				
+				<p>
+				  <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+				    Filtrar Gastos
+				  </a>
+				</p>
+				<div class="collapse" id="collapseExample">
+					<form th:action="@{/gastos/filtrar}" method="post"> 
+						<div class="form-group">
+							<input class="form-control" onkeypress="$(this).mask('0000-00')" type="text" th:name="periodo" placeholder="0000-00">
+						</div>
+						<div class="form-group mt-2">
+							<select class="form-control" th:name="categoria">
+								<option value="TODOS">Todas as categorias</option>
+								<option value="PAGAMENTO_PRESTADOR_DE_SERVICO">Pagamento prestador de serviço</option>
+								<option value="MANUTENCAO_EQUIPAMENTO">Manutenção de equipamento</option>
+								<option value="MANUTENCAO_CARRO">Manutenção carro</option>
+								<option value="ABASTECIMENTO_EQUIPAMENTO">Abastecimento de equipamento</option>
+								<option value="ABASTECIMENTO_CARRO">Abastecimento Carro</option>
+								<option value="COMPRA_DE_EQUIPAMENTO">Compra de equipamento</option>Compra de equipamento
+								<option value="COMPRA_DE_PRODUTO">Compra de produto</option>
+								<option value="COMPRA_AUTOMOVEL">Compra de automovel</option>
+								<option value="ADIANTAMENTO_PRESTADOR_DE_SERVICO">Adiantamento prestador de serviço</option>
+								<option value="RETIRADA">Retirada</option>
+							</select>
+						</div>
+						<div class="form-group mt-2">
+							<button class=" ml-3 btn btn-primary" type="submit">Buscar</button>
+						</div>
+					</form>
+				</div>
+			</div>
+			
+			<div>
+				<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#cadastrarGasto">
+					Adicionar Gasto
+				</button>
+				  
+			</div>
+			
+		 </div>
+
+		<table class="table table-striped mt-5">
+			<thead>
+				<tr>
+					<th scope="col">Data</th>
+					<th scope="col">Valor</th>
+					<th scope="col">Descrição</th>
+					<th scope="col">Categoria</th>
+					<th scope="col">Pagamento</th>
+					<th scope="col">Descriçaõ Pag.</th>
+					<th scope="col">...</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="gasto : ${gastos}">				
+					<td><span th:text="${gasto.data}"></span></td>
+					<td><span th:text="${gasto.getValorToString}"></span></td>
+					<td><span th:text="${gasto.descricaoGasto}"></span></td>
+					<td><span th:text="${gasto.categoria}"></span></td>
+					<td><span th:text="${gasto.pagamento}"></span></td>
+					<td><span th:text="${gasto.descricaoPagamento}"></span></td>
+					<td><a class="btn btn-danger btn-sm" th:href="@{/gastos/apagar/{id}(id = ${gasto.id})}"
+					 onclick="return confirm('Deseja realmente excluir esse servico?')">X</a></span></td>
+				</tr> 	
+			</tbody>
+		</table>
+
+	</div>
+	
+	
+		<!-- Modal -->
+	<div class="modal fade" id="cadastrarGasto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Cadastrar gasto</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+			
+			<form method="post" th:action="@{/gastos}">
+
+				<div class="form-group">
+					<label>Data</label>
+					<input class="form-control" type="date" th:name="data" required="true">
+				</div>
+
+				<div class="form-group">
+					<label for="email">Categoria</label>
+					<select id="categoria" class="form-control" th:name="categoria">
+						<option value="PAGAMENTO_PRESTADOR_DE_SERVICO">Pagamento prestador de serviço</option>
+						<option value="MANUTENCAO_EQUIPAMENTO">Manutenção de equipamento</option>
+						<option value="MANUTENCAO_CARRO">Manutenção carro</option>
+						<option value="ABASTECIMENTO_EQUIPAMENTO">Abastecimento de equipamento</option>
+						<option value="ABASTECIMENTO_CARRO">Abastecimento Carro</option>
+						<option value="COMPRA_DE_EQUIPAMENTO">Compra de equipamento</option>Compra de equipamento
+						<option value="COMPRA_DE_PRODUTO">Compra de produto</option>
+						<option value="COMPRA_AUTOMOVEL">Compra de automovel</option>
+						<option value="ADIANTAMENTO_PRESTADOR_DE_SERVICO">Adiantamento prestador de serviço</option>
+						<option value="RETIRADA">Retirada</option>
+					</select>
+				</div>
+
+				<div id="valor" class="form-group">
+					<label >Valor</label>
+					<input class="form-control" type="number"  step="0.01" th:name="valor" th:value="0" required="true">
+				</div>
+				
+				<div class="form-group">
+					<label>Descrição</label>
+					<input class="form-control" type="text" th:name="descricaoGasto" required="true">
+				</div>
+				
+				<div id="caseCombustivel" style="display: none;">
+					<div id="valor" class="form-group">
+						<label >Valor do litro</label>
+						<input class="form-control" type="number"  step="0.01" th:name="valorLitro" th:value ="0" required="true">
+					</div>
+					<div id="valor" class="form-group">
+						<label >Litragem abastecida</label>
+						<input class="form-control" type="number"  step="0.01" th:name="litragemAbastecida" th:value ="0" required="true">
+					</div>
+					
+				</div>
+				
+				<div class="form-group">
+					<label for="email">Forma de Pagamento</label>
+					<select class="form-control" th:name="pagamento">
+						<option value="DINHEIRO">DINHEIRO</option>
+						<option value="CREDITO">CRÉDITO</option>
+						<option value="DEBITO">DÉBITO</option>
+						<option value="CHEQUE">CHEQUE</option>
+						<option value="PIX">PIX</option>
+					
+					</select>
+				</div>
+				
+				<div class="form-group">
+					<label>Descrição Pagamento</label>
+					<input class="form-control" type="text" th:name="descricaoPagamento" required="true">
+				</div>
+				
+				<div class="form-group mt-3">
+					<button class="btn btn-success" type="submit">Cadastrar</button>
+				</div>
+
+			</form>
+
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	
+	<script>
+	  $('#categoria').change(function() {
+	    if ($(this).val() === 'ABASTECIMENTO_EQUIPAMENTO' || $(this).val() === 'ABASTECIMENTO_CARRO') {
+	      $('#caseCombustivel').show();
+	      $('#valor').hide();
+	    } else {
+	      $('#caseCombustivel').hide();
+	      $('#valor').show()
+	    }
+	  });
+	</script>
+
+
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

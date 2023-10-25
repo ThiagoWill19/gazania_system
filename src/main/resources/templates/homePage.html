@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🌼 Gazânia System </title>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-dark bg-dark justify-content-start">
+		<a class="navbar-brand">
+			Gazânia system - Home
+		</a>
+		<div class="margL">
+			<a class="btn btn-dark margL" href="/clientes">Clientes</a>
+			<a class="btn btn-dark margL" href="/servicos">Serviços</a>
+			<a class="btn btn-dark margL" href="/gastos">Gastos</a>
+			<a class="btn btn-dark margL" href="/estoque">Estoque</a>
+			<a class="btn btn-dark margL" href="/dre">DRE</a>
+			<a class="btn btn-dark margL" href="/config">Configurações</a>
+		</div>
+	</nav>
+	<div class="d-flex justify-content-end">
+		<div style="margin-right: 20px;">
+			🌼 <a href="#" data-bs-toggle="modal" data-bs-target="#att">Versão 1.1.0</a>
+		</div>
+	</div>
+
+	<div class="container">
+
+
+		<h1 class="text-center mt-3">
+			<p class="title">Dashboard</p>
+		</h1>
+
+		<div class="container mt-5">
+
+			<div class="d-flex justify-content-between">
+
+				<form class="w-25" th:method="post" th:action="@{/home}">
+					<div class="d-flex justify-content-start">
+						<input class="form-control" onkeypress="$(this).mask('0000-00')" type="text" th:name="periodo"
+							placeholder="0000-00" required>
+						<button class="btn btn-light btn-sm border margL" type="submit"><p style="font-size: 20px; padding: 0; margin: 0;"> Buscar</p></button>
+					</div>
+				</form>
+
+				<div class="d-flex justify-content-start p-1 bg-light border rounded">
+					<p class="textStatus">Total clientes cadastrados: <span class="text-muted"
+							th:text="${dashBoard.quantidadeClientes}"></span></p>
+				</div>
+
+			</div>
+
+
+			<div class="card mt-3 bg-light">
+				<div class="card-body">
+
+					<div class="row justify-content-between">
+						<div class="col-lg-6">
+
+							<div class="d-flex justify-content-start">
+								<p class="subTitle">Período: <span class="text-success"
+										th:text="${dashBoard.periodo}"></span></p>
+							</div>
+
+							<div class="d-flex justify-content-start mt-2">
+								<p class="textStatus">Total em serviços: <span class="text-muted"
+										th:text="${dashBoard.getTotalServicosToString}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="textStatus">Total em gastos: <span class="text-muted"
+										th:text="${dashBoard.getTotalGastosToString}"></span></p>
+								<a class="card-link margL" href="/gastos">Ir para gastos</a>
+							</div>
+
+							<div class="d-flex justify-content-start mt-2">
+								<p class="textStatus">
+									Situação: <span class="text-muted"
+										th:text="${dashBoard.getStatusAtualToString}"></span></p>
+							</div>
+
+							<div class="d-flex justify-content-start mt-5">
+								<a class="cardLink" th:href="@{/dre/{periodo}(periodo = ${dashBoard.periodo})}">Ver DRE
+									deste período</a>
+							</div>
+
+						</div>
+
+						<div class="col-lg-6">
+
+							<div class="d-flex justify-content-start">
+								<p class="subTitle">Total de serviços neste período: <span class="text-success"
+										th:text="${dashBoard.quantidadeServicosTotais}"></span></p>
+							</div>
+
+							<div class="d-flex justify-content-start mt-2">
+								<p class="textStatus">Total de serviços em aberto: <span class="text-muted"
+										th:text="${dashBoard.quantidadeServicosAbertos}"></span></p>
+							</div>
+							<div class="d-flex justify-content-start">
+								<p class="textStatus">Total de serviços fechados: <span class="text-muted"
+										th:text="${dashBoard.quantidadeServicosFinalizados}"></span></p>
+							</div>
+
+							<div class="d-flex justify-content-start">
+								<p class="textStatus">Serviços fechados com pagamento pendente: <span
+										class="text-danger"
+										th:text="${dashBoard.quantidadeServicosFinalizadosAguardandoPagamento}"></span>
+								</p>
+							</div>
+
+							<div class="d-flex justify-content-start">
+								<a class="card-link" href="/servicos">Ir para serviços</a>
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+			
+			<div>
+				<p><small>Aqui no Dashboard todos os serviços do período são contabilizados, até mesmo os que estão em aberto. </small></p>
+			</div>
+			
+		</div>
+		
+		
+		
+		
+		<div class="modal fade" id="att" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Atualizações da versão 1.1.0</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<div class="card">
+						<div class="card-body">
+							<h3 class="card-title" style="font-size: 25px;">Front-end</h3>
+							<lu>
+								<li>Criação da caixa de informação de versão</li>
+								<li>Adição de icones 🌼 </li>
+								<li>Novas fontes 🗛 </li>
+								<li>Ajustes nos formulários e alinhamento de elementos</li>
+							</lu>
+						</div>
+						
+					</div>
+					
+					<div class="card mt-3">
+						<div class="card-body">
+							<h3 class="card-title" style="font-size: 25px;">Back-end</h3>
+							<lu>
+								<li>Correção: quantidade de produtos vendidos no PDF do fechamento agora mostra casa decimal somente quando necessário</li>
+							</lu>
+						</div>
+						
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+		
+		
+		
+
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+			crossorigin="anonymous"></script>
+</body>
+
+</html>

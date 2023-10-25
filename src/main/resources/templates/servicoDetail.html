@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🌼 Gazânia System </title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-dark bg-dark">
+		<a class="navbar-brand" href="/home">Gazânia system - Serviço</a>
+	</nav>
+
+	<div class="container">
+
+		<nav class="mt-3" aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item" aria-current="page"><a href="/home">Home</a></li>
+				<li class="breadcrumb-item" aria-current="page"><a href="/servicos">Serviços</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Serviço De <span
+						th:text="${servico.cliente.nome}"></span> - Período: <span th:text="${servico.periodo}"></span>
+				</li>
+			</ol>
+		</nav>
+
+		<div class="d-flex justify-content-end mt-5 mb-3">
+			<div>
+				<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+					data-bs-target="#servicoAlt">
+					Alterar Dados Do Serviço
+				</button>
+			</div>
+			<div class="subGroup">
+				<a class="btn btn-sm btn-danger" th:href="@{/servicos/remover/{id} (id = ${servico.id})}"
+					onclick="return confirm('Deseja realmente excluir esse serviço?')">Apagar Este Serviço</a>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-body">
+
+				<div class="form-group">
+					<p>ID: <span th:text="${servico.id}"></span></p>
+				</div>
+
+				<div class="form-Group w-25">
+					<label for="periodo">PERÍODO</label>
+					<input id="periodo" class="form-control" type="text" th:value="${servico.periodo}" readonly>
+				</div>
+
+
+				<div class="form-group">
+					<label for="cliente">CLIENTE</label>
+					<div class="d-flex justify-content-between">
+						<input id="cliente" class="form-control w-75" type="text" th:value="${servico.cliente.nome}"
+							readonly>
+						<a th:href="@{/clientes/{id} (id = ${servico.cliente.id})}">Ver dados do cliente</a>
+					</div>
+				</div>
+
+				<div class="card mt-3 mb-3 p-2">
+					<p class="text-muted">Contrato</p>
+					<div th:if="${servico.contrato.servicoContratado.toString() == 'JARDINAGEM' }"
+						class="d-lg-flex justify-content-start">
+						<div class="form-group">
+							<label for="contrato">SERVIÇO CONTRATADO</label>
+							<input id="contrato" class="form-control" type="text"
+								th:value="${servico.contrato.servicoContratado.getName()}" readonly>
+						</div>
+						<div class="subGroup">
+							<label for="escala">FREQUÊNCIA</label>
+							<input id="escala" class="form-control" type="text" th:value="${servico.contrato.escala}"
+								readonly>
+						</div>
+						<div class="subGroup">
+							<label for="valor">VALOR DA VISITA</label>
+							<input id="valor" class="form-control" type="text"
+								th:value="${servico.contrato.getValorVisitaToString()}" readonly>
+						</div>
+					</div>
+					<div th:if="${servico.contrato.servicoContratado.toString() == 'PISCINA' }"
+						class="d-lg-flex justify-content-start">
+						<div class="form-group">
+							<label for="contrato">SERVIÇO CONTRATADO</label>
+							<input id="contrato" class="form-control" type="text"
+								th:value="${servico.contrato.servicoContratado.getName()}" readonly>
+						</div>
+						<div class="subGroup">
+							<label for="valor">VALOR MENSAL</label>
+							<input id="valor" class="form-control" type="text"
+								th:value="${servico.contrato.getValorVisitaToString()}" readonly>
+						</div>
+					</div>
+					<div th:if="${servico.contrato.servicoContratado.toString() == 'JARDINAGEM_E_PISCINA' }"
+						class="d-lg-flex justify-content-start">
+						<div class="row">
+							<div class="col-12 form-group mb-3">
+								<label for="contrato">SERVIÇO CONTRATADO</label>
+								<input id="contrato" class="form-control" type="text"
+									th:value="${servico.contrato.servicoContratado.getName()}" readonly>
+							</div>
+							<div class="col-6 subGroup w-25">
+								<label for="escala">FREQUÊNCIA JARDINAGEM</label>
+								<input id="escala" class="form-control" type="text"
+									th:value="${servico.contrato.escala}" readonly>
+							</div>
+
+							<div class="col-6 subGroup w-50">
+								<label for="valor">VALOR DA VISITA PARA JARDINAGEM</label>
+								<input id="valor" class="form-control w-25" type="text"
+									th:value="${servico.contrato.getValorVisitaToString()}" readonly>
+							</div>
+							<div class="col-6 subGroup w-25">
+								<label for="valor">VALOR MANUTENÇÃO PISCINA</label>
+								<input id="valor" class="form-control" type="text"
+									th:value="${servico.contrato.getValorVisitaPiscinaToString()}" readonly>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="d-flex justify-content-start mt-5">
+					<div class="form-group w-25">
+						<label for="sttsServico">STATUS DO SERVIÇO</label>
+						<input id="sttsServico" class="form-control" type="text" th:value="${servico.statusDoServico}"
+							readonly>
+					</div>
+					<div class="subGroup w-25">
+						<label for="sttsPagamento">STATUS DO PAGAMENTO</label>
+						<input id="sttsPagamento" class="form-control" type="text"
+							th:value="${servico.statusDoPagamento}" readonly>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between mt-3">
+					<div class="form-group w-25">
+						<label for="valor">VALOR TOTAL DO SERVIÇO</label>
+						<input id="valor" class="form-control" type="text" th:value="${servico.getValorToString()}"
+							readonly>
+					</div>
+					<div class="subGroup align-self-center">
+						<p th:if="${servico.fechamentoEnviado}" class="text-success m-0">O fechamento já foi efetuado!
+						</p>
+						<p th:unless="${servico.fechamentoEnviado}" class="text-muted m-0">Fechamento não efetuado.</p>
+						<a class="btn btn-success btn-sm m-0" data-bs-toggle="modal" data-bs-target="#fechamento"
+							onclick="return confirm('Enviar o fechamento altera o status do serviço para FINALIZADO automaticamente. Deseja Continuar?')">
+							<span th:if="${servico.fechamentoEnviado}">Refazer Fechamento</span>
+							<span th:unless="${servico.fechamentoEnviado}">Efetuar Fechamento</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row mt-5">
+
+			<div class="col-lg-12">
+				<div class="card mt-3">
+					<div class="card-body">
+
+						<div class="d-flex justify-content-between">
+							<p class="subTitle">Produtos Vendidos</p>
+							<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+								data-bs-target="#produto">
+								Adicionar Venda
+							</button>
+						</div>
+
+						<table class="table table-striped mt-2">
+							<thead>
+								<tr>
+									<th scope="col">Produto</th>
+									<th scope="col">Quantidade</th>
+									<th scope="col">Unidade de medida</th>
+									<th scope="col">Valor</th>
+
+									<th scope="col">...</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="produto : ${servico.produtosVendidos}">
+									<td th:text="${produto.produto}"></td>
+									<td th:text="${produto.formatarDouble()}"></td>
+									<td th:text="${produto.unidadeDeMedida}"></td>
+									<td th:text="${produto.getValorToString()}"></td>
+
+									<td><a th:href="@{/servicos/removerProduto(idServico=${servico.id} , idProduto=${produto.id})}"
+											class="btn btn-sm btn-danger"
+											onclick="return confirm('Deseja realmente excluir essa venda?')">X</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-12">
+				<div class="card mt-3">
+					<div class="card-body">
+
+						<div class="d-flex justify-content-between">
+							<p class="subTitle">Serviços Adicionais</p>
+							<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+								data-bs-target="#servicoAdc">
+								Adicionar Serviço
+							</button>
+						</div>
+
+						<table class="table table-striped mt-2">
+							<thead>
+								<tr>
+									<th scope="col">Serviço</th>
+									<th scope="col">Valor</th>
+									<th scope="col">Data</th>
+									<th scope="col">...</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="servicoAdc : ${servico.servicosAdicionais}">
+									<td th:text="${servicoAdc.descricao}"></td>
+									<td th:text="${servicoAdc.getValorToString()}"></td>
+									<td th:text="${servicoAdc.data}"></td>
+									<td><a th:href="@{/servicos/removerServicoAdicional(idServico=${servico.id} , idServicoAdc=${servicoAdc.id})}"
+											class="btn btn-sm btn-danger"
+											onclick="return confirm('Deseja realmente excluir esse serviço adicional?')">X</a>
+									</td>
+
+								</tr>
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="col-lg-12">
+				<div class="card mt-3 w-50">
+					<div class="card-body">
+
+						<div class="d-flex justify-content-between">
+							<p class="subTitle">Visitas</p>
+							<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+								data-bs-target="#visita">
+								Adicionar Visita
+							</button>
+						</div>
+
+						<table class="table table-striped mt-2">
+							<thead>
+								<tr>
+									<th scope="col">Data Da Visita</th>
+									<th scope="col">...</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="visita : ${servico.visitasFeitas}">
+									<td th:text="${visita.data}"></td>
+									<td><a th:href="@{/servicos/removerVisita(idServico=${servico.id} , idVisita=${visita.id})}"
+											class="btn btn-sm btn-danger"
+											onclick="return confirm('Deseja realmente excluir essa visita?')">X</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+
+			<div th:if="${servico.contrato.servicoContratado.toString == 'JARDINAGEM_E_PISCINA'}" class="col-lg-12">
+				<div class="card mt-3 w-50">
+					<div class="card-body">
+
+						<div class="d-flex justify-content-between">
+							<p class="subTitle">Visitas piscinas</p>
+							<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+								data-bs-target="#visitaPiscina">
+								Adicionar Visita
+							</button>
+						</div>
+
+						<table class="table table-striped mt-2">
+							<thead>
+								<tr>
+									<th scope="col">Data Da Visita</th>
+									<th scope="col">...</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="visita : ${servico.visitasFeitasPiscina}">
+									<td th:text="${visita.data}"></td>
+									<td><a th:href="@{/servicos/removerVisitaPiscina(idServico=${servico.id} , idVisita=${visita.id})}"
+											class="btn btn-sm btn-danger"
+											onclick="return confirm('Deseja realmente excluir essa visita?')">X</a></td>
+								</tr>
+							</tbody>
+						</table>
+
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+
+
+	<!-- Modal produtoVenda-->
+	<div class="modal fade" id="produto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Adicionar Venda</span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<form th:action="@{/servicos/adicionarProduto/{servicoId}(servicoId = ${servico.id})}"
+						th:method="post">
+
+						<div class="form-group">
+							<label for="">Produto</label>
+							<input class="form-control" type="text" th:name="produto" required="true">
+						</div>
+
+						<div class="d-flex justify-content-start">
+
+							<div class="form-group w-50">
+								<label for="">Quantidade</label>
+								<input class="form-control" type="number" th:name="quantidade" step="0.01" required="true">
+							</div>
+
+							<div class="subGroup w-50">
+								<label for="">Unidade de medida</label>
+								<select class="form-control" th:name="unidadeDeMedida" id="">
+									<option th:value="GRAMA">Grama</option>
+									<option th:value="KILO">Kilo</option>
+									<option th:value="ML">mL</option>
+									<option th:value="LITRO">Litro</option>
+									<option th:value="UNIDADE">Unidade</option>
+								</select>
+							</div>
+
+						</div>
+
+						<div class="d-flex justify-content-start">
+
+							<div class="form-group w-50">
+								<label for="">Valor</label>
+								<input class="form-control" step="0.01" type="number" th:name="valor" required="true">
+							</div>
+							<div class="subGroup w-50">
+								<label for="">Data</label>
+								<input class="form-control" type="date" th:name="data" required="true">
+							</div>
+
+						</div>
+
+						<div class="form-group mt-2">
+							<button class="btn btn-success" type="submit">Cadastrar</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal servicoAdc-->
+	<div class="modal fade" id="servicoAdc" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Cadastrar Serviço Adicional</span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<form th:action="@{/servicos/adicionarServico/{servicoId}(servicoId = ${servico.id})}"
+						th:method="post">
+
+						<div class="form-group">
+							<label for="">Serviço</label>
+							<input class="form-control" type="text" th:name="descricao" required="true">
+						</div>
+
+						<div class="d-flex justify-content-start">
+							<div class="form-group w-50">
+								<label for="">Valor</label>
+								<input class="form-control" step="0.01" type="number" th:name="valor" required="true">
+							</div>
+							<div class="subGroup w-50">
+								<label for="">Data</label>
+								<input class="form-control" type="date" th:name="data" required="true">
+							</div>
+						</div>
+
+						<div class="form-group mt-2">
+							<button class="btn btn-success" type="submit">Cadastrar</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal visitas -->
+	<div class="modal fade" id="visita" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Adicionar Visita</span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<form th:action="@{/servicos/adicionarVisita/{servicoId}(servicoId = ${servico.id})}"
+						th:method="post">
+
+						<div class="form-group">
+							<label for="">Data</label>
+							<input class="form-control" type="date" th:name="data" required="true">
+						</div>
+
+						<div class="form-group mt-2">
+							<button class="btn btn-success" type="submit">Adicionar Visita</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal visitas Piscina -->
+	<div class="modal fade" id="visitaPiscina" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Adicionar Visita Piscina</span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<form th:action="@{/servicos/adicionarVisitaPiscina/{servicoId}(servicoId = ${servico.id})}"
+						th:method="post">
+
+						<div class="form-group">
+							<label for="">Data</label>
+							<input class="form-control" type="date" th:name="data" required="true">
+						</div>
+
+						<div class="form-group mt-2">
+							<button class="btn btn-success" type="submit">Adicionar Visita</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="servicoAlt" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog">
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Alterar Serviço</span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<form th:action="@{/servicos/alterar/{id}(id = ${servico.id})}" th:method="post">
+
+						<div class="form-group">
+							<label>Status Do Serviço</label>
+							<select class="form-control" th:name="statusDoServico">
+								<option th:value="${servico.statusDoServico}" selected><span
+										th:text="${servico.statusDoServico}"></span> </option>
+								<option th:value="EM_ABERTO">Em_Aberto</option>
+								<option th:value="FINALIZADO">Finalizado</option>
+							</select>
+						</div>
+
+						<div class="form-group">
+							<label>Status Do Pagamento</label>
+							<select class="form-control" th:name="statusDoPagamento">
+								<option th:value="${servico.statusDoPagamento}" selected><span
+										th:text="${servico.statusDoPagamento}"></span> </option>
+								<option th:value="PENDENTE">Pendente</option>
+								<option th:value="PAGO">Pago</option>
+							</select>
+						</div>
+
+						<div class="form-group mt-2">
+							<button class="btn btn-success" type="submit"
+								onclick="return confirm('Confirma alteração de serviço?')">
+								Salvar Alterações
+							</button>
+						</div>
+
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="fechamento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+		<div class="modal-dialog">
+
+			<div class="modal-content">
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Enviar Fechamento</span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<a class="btn btn-primary"
+						th:href="@{/servicos/fechamentoPdf/{servicoId} (servicoId = ${servico.id})}">Gerar PDF</a>
+					<a class="btn btn-primary"
+						th:href="@{/servicos/fechamento/{servicoId} (servicoId = ${servico.id})}">Enviar por email</a>
+
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

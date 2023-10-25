@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>🌼 Gazânia System </title>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+	<nav class="navbar navbar-dark bg-dark">
+		<a class="navbar-brand" href="/home">Gazânia system - Detalhes do Cliente</a>
+	</nav>
+
+	<div class="container">
+
+		<nav class="mt-3" aria-label="breadcrumb">
+			<ol class="breadcrumb">
+				<li class="breadcrumb-item" aria-current="page"><a href="/home">Home</a></li>
+				<li class="breadcrumb-item" aria-current="page"><a href="/clientes">Clientes</a></li>
+				<li class="breadcrumb-item active" aria-current="page">Detalhes Do Cliente: <span
+						th:text="${cliente.nome}"></span></li>
+			</ol>
+		</nav>
+
+		<div class="d-flex justify-content-end mt-5">
+			<div>
+				<button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+					data-bs-target="#updateCliente">
+					EDITAR
+				</button>
+			</div>
+			<div class="subGroup">
+				<a class="btn btn-danger btn-sm" th:href="@{delete/{id}(id = ${cliente.id})}"
+					onclick="return confirm('Deseja realmente excluir?')">REMOVER</a>
+			</div>
+		</div>
+
+		<div class="card mt-2">
+			<div class="card-body">
+
+				<div class="form-group w-75">
+					<label>NOME</label>
+					<input class="form-control" type="text" th:value="${cliente.nome}" disabled>
+				</div>
+
+				<div class="form-group d-flex justify-content-start">
+
+					<div>
+						<label>TELEFONE</label>
+						<input class="form-control" type="text" th:value="${cliente.whatsapp}" disabled>
+					</div>
+
+					<div class="subGroup w-50">
+						<label>EMAIL</label>
+						<input class="form-control" type="text" th:value="${cliente.email}" disabled>
+					</div>
+
+				</div>
+
+				<div class="mt-3">
+					<p class="text-muted m-0 p-0">Endereço 🗺️ </p>
+
+					<div class="form-group w-75">
+						<label>RUA</label>
+						<input class="form-control" type="text" th:value="${cliente.endereco.rua}" disabled>
+					</div>
+
+					<div class="form-group d-flex justify-content-start">
+
+						<div>
+							<label>NÚMERO</label>
+							<input class="form-control" type="text" th:value="${cliente.endereco.numero}" disabled>
+						</div>
+
+						<div class="subGroup">
+							<label for>BAIRRO</label>
+							<input class="form-control" type="text" th:value="${cliente.endereco.bairro}" disabled>
+						</div>
+
+					</div>
+
+					<div class="form-group d-flex justify-content-start">
+
+						<div>
+							<label>CIDADE</label>
+							<input class="form-control" type="text" th:value="${cliente.endereco.cidade}" disabled>
+						</div>
+
+						<div class="subGroup">
+							<label>UF</label>
+							<input class="form-control" type="text" th:value="${cliente.endereco.uf}" disabled>
+						</div>
+
+					</div>
+
+					<div class="form-group w-75">
+						<label>ENDEREÇO PARA O FECHAMENTO</label>
+						<input class="form-control" type="text" th:value="${cliente.endereco.complemento}" disabled>
+					</div>
+
+
+				</div>
+
+			</div>
+		</div>
+
+		<p class="mb-0 mt-3 subTitle">Serviços</p>
+		<div class="card mb-5">
+			<div class="card-body">
+				<a class="card-link" data-bs-toggle="modal" data-bs-target="#servicosEmAberto">
+					<p>Serviços em aberto: <span th:text="${#lists.size(servicosEmAberto)}"></span></p>
+				</a>
+				<div class="d-flex justify-content-start">
+					<div><button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+							data-bs-target="#lista">
+							Ver Lista de <strong>todos serviços</strong> de <span th:text="${cliente.nome}"></span>
+						</button></div>
+
+				</div>
+
+			</div>
+		</div>
+
+
+	</div>
+
+	<!-- Modal update cliente -->
+	<div class="modal fade" id="updateCliente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel1">Alterar dados do Cliente</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<form th:method="post" th:action="@{/clientes/update}" th:object="${cliente}">
+
+						<div class="form-group">
+							<input class="form-control" type="text" th:field="*{id}" hidden>
+						</div>
+
+						<div class="form-group">
+							<label>Nome</label>
+							<input class="form-control" type="text" th:field="*{nome}" required="true">
+						</div>
+
+						<div class="form-group">
+							<label>Whatsapp</label>
+							<input class="form-control" type="text" onkeypress="$(this).mask('(00) 00000-0009')"
+								th:field="*{whatsapp}" required="true">
+						</div>
+
+						<div class="form-group">
+							<label>Email</label>
+							<input class="form-control" type="email" th:field="*{email}" required="true">
+						</div>
+
+						<div class="mt-3">
+
+							<p class="text-muted p-o m-0">Endereço 🗺️ </p>
+
+							<div class="d-flex justify-content-between">
+								<div class="form-group">
+									<label>Rua</label>
+									<input class="form-control" type="text" th:field="*{endereco.rua}">
+								</div>
+
+								<div class="form-group">
+									<label>Número</label>
+									<input class="form-control" type="number" th:field="*{endereco.numero}">
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label>Bairro</label>
+								<input class="form-control" type="text" th:field="*{endereco.bairro}">
+							</div>
+							<div class="d-flex justify-content-between">
+								<div class="form-group">
+									<label>Cidade</label>
+									<input class="form-control" type="text" th:field="*{endereco.cidade}">
+								</div>
+								<div class="form-group">
+									<label>UF</label>
+									<input class="form-control" type="text" th:field="*{endereco.uf}">
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Endereço para o fechamento</label>
+								<input class="form-control" type="text" th:field="*{endereco.complemento}">
+							</div>
+
+							<div class="mt-3">
+								<button type="submit" class="btn btn-success">Salvar</button>
+							</div>
+
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal tabela serviços-->
+	<div class="modal fade" id="lista" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel2">Lista de serviços de <span
+							th:text="${cliente.nome}"></span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<div class="d-flex justify-content-end">
+						<button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+							data-bs-target="#servico">
+							Novo Serviço Para <span th:text="${cliente.nome}"></span></button>
+
+					</div>
+
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">Período</th>
+								<th scope="col">Serviço</th>
+								<th scope="col">Status</th>
+								<th scope="col">Pagamento</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="servico : ${cliente.servicos}">
+								<th class="w-25"><a class="card-link" th:href="@{/servicos/{id}(id = ${servico.id})}"
+										th:text="${servico.periodo}"></a></th>
+								<td><span th:text="${servico.contrato.servicoContratado.getName()}"></span></td>
+								<th>
+									<p class="text-muted" th:text="${servico.statusDoServico}"></p>
+								</th>
+								<th>
+									<p class="text-muted" th:text="${servico.statusDoPagamento}"></p>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="servicosEmAberto" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel2">Serviçoes em aberto de <span
+							th:text="${cliente.nome}"></span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">Período</th>
+								<th scope="col">Status do serviço</th>
+								<th scope="col">Contrato</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="servico : ${servicosEmAberto}">
+								<th><a class="card-link" th:href="@{/servicos/{id}(id = ${servico.id})}"
+										th:text="${servico.periodo}"></a></th>
+								<th>
+									<p class="text-muted" th:text="${servico.statusDoServico}"></p>
+								</th>
+								<th>
+									<p class="text-muted" th:text="${servico.contrato.servicoContratado.getName()}"></p>
+								</th>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="servico" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Novo Serviço Para <span
+							th:text="${cliente.nome}"></span> </h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<form th:action="@{/servicos}" th:method="post" th:object="${novoServicoDto}">
+
+						<div class="form-group w-50">
+							<label>PERÍODO</label>
+							<input id="data" class="form-control" type="text" onkeypress="$(this).mask('00-0000')"
+								th:name="periodo" placeholder="Mês-Ano" required="true">
+						</div>
+						<div class="form-group">
+							<label>CLIENTE ID</label>
+							<input class="form-control" type="number" th:name="clienteId" th:value="${cliente.id}"
+								readonly>
+						</div>
+						<div class="card mt-3">
+							<div class="card-body">
+
+								<p class="subTitle mb-3">Contrato</p>
+
+								<div class="form-group">
+									<label>SERVIÇO CONTRATADO</label>
+									<select id="contrato" class="form-control" th:name="contrato.servicoContratado">
+										<option selected th:value="JARDINAGEM">Manutenção de Jardim</option>
+										<option th:value="PISCINA">Manutenção de Piscina</option>
+										<option th:value="JARDINAGEM_E_PISCINA">Manutenção de Jardim e Piscina</option>
+									</select>
+								</div>
+
+								<div id="frequencia" class="form-group">
+									<label>FREQUÊNCIA DAS MANUTENÇÕES DE JARDIM</label>
+
+									<select class="form-control" th:name="contrato.escala">
+										<option th:value="SEMANAL">Semanal</option>
+										<option th:value="QUINZENAL">Quinzenal</option>
+										<option th:value="MENSAL">Mensal</option>
+									</select>
+								</div>
+
+								<div class="form-group w-50">
+									<label id="valorPiscinaJardim" >VALOR VISITA JARDIM</label>
+									<input class="form-control" type="number" th:name="contrato.valorDaVisita"
+										step="0.01" required="true">
+								</div>
+
+
+								<div id="jardimPiscina" style="display: none;">
+
+									<div class="form-group w-50">
+										<label>VALOR MANUTENÇÃO DE PISCINA</label>
+										<input class="form-control" type="number"
+											th:name="contrato.valorDaVisitaPiscina" step="0.01" th:value="0">
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+
+						<div class="form-group mt-3">
+							<button class="btn btn-sm btn-success" type="submit">Cadastrar</button>
+						</div>
+
+					</form>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$('#contrato').change(function () {
+			if ($(this).val() === 'JARDINAGEM_E_PISCINA') {
+				$('#jardimPiscina').show();
+			} else {
+				$('#jardimPiscina').hide();
+			}
+		});
+		
+		$('#contrato').change(function () {
+			if ($(this).val() === 'PISCINA') {
+				$('#frequencia').hide();
+			} else {
+				$('#frequencia').show();
+			}
+		});
+		$('#contrato').change(function () {
+			if ($(this).val() === 'PISCINA') {
+				document.getElementById('valorPiscinaJardim').innerText = "VALOR MANUTENÇÃO PISCINA"
+			} else {
+				document.getElementById('valorPiscinaJardim').innerText = "VALOR VISITA JARDIM"
+			}
+		});
+	</script>
+	
+	<script>
+		$(document).ready(function () {
+			// Seleciona o campo que deseja validar
+			var campo = $('#data');
+
+			// Adiciona o evento blur para o campo
+			campo.blur(function () {
+				// Obtém o valor do campo
+				var valor = campo.val();
+
+				// Verifica se o valor corresponde ao formato MM-YYYY
+				var regex = /^(0[1-9]|1[0-2])-(20\d{2})$/;
+				if (!regex.test(valor)) {
+					// Exibe mensagem de erro
+					alert('Por favor, insira uma data no formato MM-YYYY.');
+
+					// Limpa o campo
+					campo.val('');
+				}
+			});
+		});
+
+	</script>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
